@@ -11,7 +11,7 @@
 
 #include "Monster.h"
 
-struct monster createMonster( int maxHP, int attack, char* name )
+struct monster createMonster( int maxHP, int attack, char* name, int X, int Y, char graphic )
 {
     struct monster newMonster;
     newMonster.maxHP = maxHP;
@@ -19,6 +19,11 @@ struct monster createMonster( int maxHP, int attack, char* name )
     newMonster.attack = attack;
     newMonster.identifier = UID;
     UID++;
+    
+    newMonster.X = X;
+    newMonster.Y = Y;
+    newMonster.graphic = graphic;
+    
     nameMonster( &newMonster, name );
     return newMonster;
 }
@@ -39,5 +44,11 @@ int attackPlayerCommander( struct monster *attacker )
 int hurtMonster( struct monster *target, int damage )
 {
     target->currentHP = target->currentHP - damage;
+    return 0;
+}
+
+int drawMonster( struct monster *target )
+{
+    return mvaddch( target->Y, target->X, target->graphic );
     return 0;
 }

@@ -17,16 +17,27 @@ struct monster {
     int currentHP;
     int attack;
     int identifier;
+    
+    int X;
+    int Y;
+    
     char* name;
+    char graphic;
 };
 
 int UID;
 
-struct monster createMonster( int maxHP, int attack, char* name );
+struct monster listofMonsters[ 20 ];
+
+struct monster createMonster( int maxHP, int attack, char* name, int X, int Y, char graphic );
 
 int nameMonster( struct monster *target, char* newName );
 
 int attackPlayerCommander( struct monster *attacker );
+
+int hurtMonster( struct monster *target, int damage );
+
+int drawMonster( struct monster *attacker );
 
 
 #endif

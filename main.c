@@ -10,14 +10,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "Player.h"
+#include "globalFunctions.h"
 
 int row, col;
 
 void update_scr( );
 void draw_title( );
 void make_box( int X, int Y, int WIDTH, int HEIGHT, char border );
+void changeMessage( char* newMessage );
 
 int main( )
 {
@@ -39,10 +42,15 @@ int main( )
 	keypad( mainWindow, TRUE );	
 	noecho( );
     
-    initPlayer( 14, 6 );
+    initPlayer( 0, 3, 10, 1, 1 );
     initGameArea( 0, 3, 60, 20 );
+    changeMessage(" ");
+    UID = 0;
     
-    struct monster orc = createMonster( 10, 5, "Orc" );
+    listofMonsters[ UID ] = createMonster( 10, 5, "Orc", 20, 20, 'O' );
+    listofMonsters[ UID ] = createMonster( 12, 3, "Bear", 15, 15, 'B' );
+    listofMonsters[ UID ] = createMonster( 4, 7, "Kobold", 2, 4, 'K' );
+
 	
 	int ch;
 	while( ( ch = wgetch( mainWindow ) ) != 'q' )
@@ -79,10 +87,17 @@ void update_scr( WINDOW *local_win )
 	clear( );
 	
     drawGameArea( );
-    drawPlayer( );
+    int i;
+    for( i = 0; i != UID; i++ )
+    {
+        drawMonster( &listofMonsters[i] );
+
+    }
 	draw_title( );
 	make_box( getGameAreaXplusWidth( ) + 1, getGameAreaY( ), col, row - 2, '+' );
 	make_box( 0, getGameAreaYplusHeight( ) + 1, col, row, '+' );
+    drawPlayer( );
+    mvprintw( getGameAreaYplusHeight( ) + 2, 1, message );
     move( row-1, col-1 );
 	
 	refresh( );
@@ -96,7 +111,7 @@ void draw_title( )
 	{
 		addch( '-' );
 	}
-	mvprintw( 1, col/2, "ARMIES" );
+	mvprintw( 1, ( col/2 )-3, "ARMIES" );
 	move( 2, 0 );
 	for( i = 0; i != col; i++ )
 	{

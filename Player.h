@@ -9,8 +9,15 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <ncurses.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
 #include "GameArea.h"
 #include "Monster.h"
+#include "globalFunctions.h"
 
 struct unit {
     int attack;
@@ -18,6 +25,21 @@ struct unit {
     int number;
     int speed;
     char* name
+};
+
+enum Condition {
+    SLOW = 0,
+    WEAK = 1,
+    POISONED = 2,
+    CONFUSED = 3
+};
+
+enum checkDirection 
+{
+    CHKUP = -1,
+    CHKLEFT = -1,
+    CHKDOWN = 1,
+    CHKRIGHT = 1
 };
 
 enum Direction {
@@ -31,13 +53,6 @@ enum Direction {
     RIGHTDOWN = 31
 };
 
-enum Condition {
-    SLOW = 0,
-    WEAK = 1,
-    POISONED = 2,
-    CONFUSED = 3
-};
-
 int playerX, playerY;
 int commanderAttack, commanderMaxHP, commanderCurrentHP;
 int speed;
@@ -45,7 +60,7 @@ int companion;
 
 struct unit army[ 10 ];
 
-int initPlayer( int x, int y );
+int initPlayer( int x, int y, int maxHP, int attack, int initialSpeed );
 
 int movePlayer( int dir );
 
@@ -56,5 +71,9 @@ int hurtCommander( int damage );
 int commanderAttackTarget( struct monster *target );
 
 int armyAttack( );
+
+struct monster* checkCollision( int testLocationX, int testLocationY );
+
+int reallyMove( int *current, int check, struct monster *collideWith, int UPorLEFT );
 
 #endif
