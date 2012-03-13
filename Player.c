@@ -24,22 +24,33 @@ int initPlayer( int x, int y, int maxHP, int attack, int initialSpeed )
 }
 
 
-int movePlayer( int dir )
+int updatePlayer( int dir )
 {
+    if ( conditionDuration != 0 )
+    {
+        conditionDuration--;
+    }
+    else
+    {
+        changeCommanderStatus( NORMAL, 0 );
+    }
+    
     struct monster *collideWith;
     switch ( dir )
     {
         case UP:
-            reallyMove( &playerY, ( playerY > getGameAreaY( ) ), collideWith, CHKUP );
+            movePlayer( &playerY, ( playerY > getGameAreaY( ) ), collideWith, CHKUP );
             break;
         case DOWN:
-            reallyMove( &playerY, ( playerY < getGameAreaYplusHeight( ) ), collideWith, CHKDOWN );
+            movePlayer( &playerY, ( playerY < getGameAreaYplusHeight( ) ), collideWith, CHKDOWN );
             break;
         case LEFT:
-            reallyMove( &playerX, ( playerX > getGameAreaX( ) ), collideWith, CHKLEFT );
+            movePlayer( &playerX, ( playerX > getGameAreaX( ) ), collideWith, CHKLEFT );
             break;
         case RIGHT:
-            reallyMove( &playerX, (playerX < getGameAreaXplusWidth( ) ), collideWith, CHKRIGHT );
+            movePlayer( &playerX, (playerX < getGameAreaXplusWidth( ) ), collideWith, CHKRIGHT );
+            break;
+        case NOTHING:
             break;
         default:
             return 1;
@@ -56,6 +67,21 @@ int drawPlayer( )
     mvprintw( statsY + 1, statsX, "Attack: %d", commanderAttack );
     mvprintw( statsY + 2, statsX, "Speed: %d", speed );
 
+    char* tmp = malloc( sizeof( "Status: " ) );
+    strcpy( tmp, "Status: " );
+    switch ( getCommanderStatus( ) )
+    {
+        case STOP:
+            strcat( tmp, "STOPPED." );
+            break;
+        case NORMAL:
+            strcat( tmp, "NORMAL." );
+            break;
+    }
+    mvprintw( statsY + 3, statsX, tmp );
+    
+    free( tmp );
+    
     return mvaddch( playerY, playerX, '@' );
 }
 
@@ -67,12 +93,12 @@ int hurtCommander( int damage )
 
 int commanderAttackTarget( struct monster* target )
 {
-    hurtMonster( target, commanderAttack );
-    char* string = malloc( sizeof( "Attack" ) );
+    char* string = malloc( sizeof( "Attacked" ) );
     strcpy( string, "Attacked " );
     strcat( string, target->name );
     changeMessage( string  );
-    refresh( );
+    free( string );
+    hurtMonster( target, commanderAttack );
     return 0;
 }
 
@@ -81,19 +107,22 @@ struct monster* checkCollision( int testLocationX, int testLocationY )
     int i;
     for ( i = 0; i != UID; i++ )
     {
-        if ( testLocationX == listofMonsters[ i ].X && testLocationY == listofMonsters[ i ].Y )
+        if ( listofMonsters[ i ].identifier != -1 )
         {
-            return &listofMonsters[ i ];
-        }
-        else
-        {
-            //don't do anything
+            if ( testLocationX == listofMonsters[ i ].X && testLocationY == listofMonsters[ i ].Y )
+            {
+                return &listofMonsters[ i ];
+            }
+            else
+            {
+                //don't do anything
+            }
         }
     }
     return NULL;
 }
 
-int reallyMove( int *current, int check, struct monster* collideWith, int direction )
+int movePlayer( int *current, int check, struct monster* collideWith, int direction )
 {
     int k = direction * 1;
     collideWith = checkCollision( playerX, *current + k );
@@ -102,10 +131,25 @@ int reallyMove( int *current, int check, struct monster* collideWith, int direct
     {
         *current = *current + k;
     }
-    else if ( collideWith != NULL)
+    else if ( collideWith != NULL )
     {
         commanderAttackTarget( collideWith );
     }
-    
+    else
+    {
+        changeMessage( "Bumped into a wall." );
+    }
+
     return 0;
+}
+
+int getCommanderStatus( )
+{
+    return commanderStatus;
+}
+
+void changeCommanderStatus( int newStatus, int duration )
+{
+    conditionDuration = duration;
+    commanderStatus = newStatus;
 }

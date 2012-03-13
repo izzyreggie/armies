@@ -13,3 +13,15 @@ void changeMessage( char* newMessage )
     message = malloc( sizeof( newMessage ) );
     strcpy( message, newMessage );
 }
+
+int randInt( int from, int to )
+{
+    randSeed = ( randSeed % to ) + from;
+    return randSeed;
+}
+
+void setSeed( int setTo )
+{
+    srandom( time( 0 ) );
+    randSeed = setTo;
+}

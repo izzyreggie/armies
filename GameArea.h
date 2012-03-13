@@ -9,6 +9,8 @@
 #ifndef GAMEAREA_H
 #define GAMEAREA_H
 
+#include "globalFunctions.h"
+
 int gameAreaX, gameAreaY, gameAreaXplusWidth, gameAreaYplusHeight;
 
 int initGameArea( int x, int y, int xplusw, int yplush );

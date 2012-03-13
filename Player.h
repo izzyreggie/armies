@@ -9,29 +9,18 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <ncurses.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-
 #include "GameArea.h"
 #include "Monster.h"
+#include "Units.h"
 #include "globalFunctions.h"
 
-struct unit {
-    int attack;
-    int hp;
-    int number;
-    int speed;
-    char* name
-};
-
 enum Condition {
-    SLOW = 0,
-    WEAK = 1,
-    POISONED = 2,
-    CONFUSED = 3
+    NORMAL = 0,
+    SLOW = 1,
+    WEAK = 2,
+    POISONED = 3,
+    CONFUSED = 4,
+    STOP = 5
 };
 
 enum checkDirection 
@@ -50,11 +39,13 @@ enum Direction {
     LEFTUP = 20,
     RIGHTUP = 30,
     LEFTDOWN = 21,
-    RIGHTDOWN = 31
+    RIGHTDOWN = 31,
+    NOTHING = 11
 };
 
 int playerX, playerY;
-int commanderAttack, commanderMaxHP, commanderCurrentHP;
+int commanderAttack, commanderMaxHP, commanderCurrentHP, commanderStatus;
+int conditionDuration;
 int speed;
 int companion;
 
@@ -62,7 +53,7 @@ struct unit army[ 10 ];
 
 int initPlayer( int x, int y, int maxHP, int attack, int initialSpeed );
 
-int movePlayer( int dir );
+int updatePlayer( int dir );
 
 int drawPlayer( );
 
@@ -74,6 +65,10 @@ int armyAttack( );
 
 struct monster* checkCollision( int testLocationX, int testLocationY );
 
-int reallyMove( int *current, int check, struct monster *collideWith, int UPorLEFT );
+int movePlayer( int *current, int check, struct monster *collideWith, int direction );
+
+int getCommanderStatus( );
+
+void changeCommanderStatus( int newStatus, int duration );
 
 #endif

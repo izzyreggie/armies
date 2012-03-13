@@ -10,6 +10,7 @@
 #ifndef MONSTER_H
 #define MONSTER_H
 
+#include "globalFunctions.h"
 #include "Player.h"
 
 struct monster {
@@ -38,6 +39,8 @@ int attackPlayerCommander( struct monster *attacker );
 int hurtMonster( struct monster *target, int damage );
 
 int drawMonster( struct monster *attacker );
+
+int updateMonster( struct monster *target );
 
 
 #endif

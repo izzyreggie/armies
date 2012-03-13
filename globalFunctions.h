@@ -9,8 +9,21 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#include <ncurses.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <time.h>
+#include <math.h>
+
 char* message;
+int randSeed;
 
 void changeMessage( char* newMessage );
+
+int randInt( int from, int to );
+
+void setSeed( int setTo );
 
 #endif
