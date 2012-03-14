@@ -17,8 +17,16 @@ struct unit {
     int number;
     int speed;
     
-    char* name
+    char* name;
 };
+
+struct unit army[ 10 ];
+
+void displayUnitsInArmy( int beginDisplayX, int beginDisplayY );
+
+void addUnitToArmy( struct unit* target );
+
+void removeUnitFromArmy( int indexToRemove );
 
 struct unit createNewUnit( int attack, int hp, int size, int speed, char* name );
 

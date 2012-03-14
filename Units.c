@@ -8,6 +8,27 @@
 
 #include "Units.h"
 
+void displayUnitsInArmy( int beginDisplayX, int beginDisplayY )
+{
+    int i;
+    for ( i = 0; i != armyFilledTo; i++ )
+    {
+        mvprintw( beginDisplayY + i, beginDisplayX, "%s: %d", army[ i ].name, army[ i ].number );
+    }
+}
+
+void addUnitToArmy( struct unit *target )
+{
+    army[ armyFilledTo ] = *target;
+    armyFilledTo++;
+}
+
+void removeUnitFromArmy( int indexToRemove )
+{
+    swapUnits( indexToRemove, armyFilledTo );
+    armyFilledTo--;
+}
+
 struct unit createNewUnit( int attack, int hp, int size, int speed, char* name )
 {
     struct unit newUnit;

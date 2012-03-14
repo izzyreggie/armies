@@ -67,20 +67,19 @@ int drawPlayer( )
     mvprintw( statsY + 1, statsX, "Attack: %d", commanderAttack );
     mvprintw( statsY + 2, statsX, "Speed: %d", speed );
 
-    char* tmp = malloc( sizeof( "Status: " ) );
-    strcpy( tmp, "Status: " );
+    char tmp[64];
     switch ( getCommanderStatus( ) )
     {
         case STOP:
-            strcat( tmp, "STOPPED." );
+            sprintf( tmp, "STOPPED" );
             break;
         case NORMAL:
-            strcat( tmp, "NORMAL." );
+            sprintf( tmp, "NORMAL" );
             break;
     }
-    mvprintw( statsY + 3, statsX, tmp );
-    
-    free( tmp );
+    mvprintw( statsY + 3, statsX, "Status: %s", tmp );
+    mvprintw( statsY + 4, statsX, "xxxxYour Armyxxxx" );
+    displayUnitsInArmy( statsX, statsY + 5 );
     
     return mvaddch( playerY, playerX, '@' );
 }
@@ -93,19 +92,14 @@ int hurtCommander( int damage )
 
 int commanderAttackTarget( struct monster* target )
 {
-    char* string = malloc( sizeof( "Attacked" ) );
-    strcpy( string, "Attacked " );
-    strcat( string, target->name );
-    changeMessage( string  );
-    free( string );
-    hurtMonster( target, commanderAttack );
+    //hurtMonster( target, commanderAttack );
     return 0;
 }
 
 struct monster* checkCollision( int testLocationX, int testLocationY )
 {
     int i;
-    for ( i = 0; i != UID; i++ )
+    for ( i = 0; i != monsterListFilledTo; i++ )
     {
         if ( listofMonsters[ i ].identifier != -1 )
         {
@@ -125,7 +119,7 @@ struct monster* checkCollision( int testLocationX, int testLocationY )
 int movePlayer( int *current, int check, struct monster* collideWith, int direction )
 {
     int k = direction * 1;
-    collideWith = checkCollision( playerX, *current + k );
+    collideWith = checkCollision( playerX, *current + k);
     if ( collideWith == NULL ) { collideWith = checkCollision(*current + k, playerY ); }
     if( ( check == TRUE ) && collideWith == NULL )
     {
@@ -133,7 +127,7 @@ int movePlayer( int *current, int check, struct monster* collideWith, int direct
     }
     else if ( collideWith != NULL )
     {
-        commanderAttackTarget( collideWith );
+        hurtMonster( collideWith, commanderAttack );
     }
     else
     {

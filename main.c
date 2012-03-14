@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "Player.h"
 #include "globalFunctions.h"
 
 int row, col;
@@ -44,36 +43,42 @@ int main( )
     
     initPlayer( 0, 3, 10, 1, 1 );
     initGameArea( 0, 3, 60, 20 );
+    armyFilledTo = 0;
+    monsterListFilledTo = 0;
+    
     changeMessage(" ");
-    UID = 0;
     
-    listofMonsters[ UID ] = createMonster( 10, 5, "Orc", 20, 20, 'O' );
-    listofMonsters[ UID ] = createMonster( 12, 3, "Bear", 15, 15, 'B' );
-    listofMonsters[ UID ] = createMonster( 4, 7, "Kobold", 2, 4, 'K' );
+    createMonster( 10, 5, "Orc", 20, 20, 'O' );
+    createMonster( 12, 3, "Bear", 15, 15, 'B' );
+    createMonster( 4, 7, "Kobold", 2, 4, 'K' );
     
-    listofMonsters[ UID ] = createMonster( 21, 9, "Grue", 34, 19, 'G' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 17, 5, 'g' );
-    listofMonsters[ UID ] = createMonster( 12, 7, "Catoblepas", 6, 9, 'C' );
+    createMonster( 21, 9, "Grue", 34, 19, 'G' );
+    createMonster( 6, 5, "Goblin", 17, 5, 'g' );
+    createMonster( 12, 7, "Catoblepas", 6, 9, 'C' );
     
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 18, 5, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 17, 6, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 18, 4, 'g' );
+    createMonster( 6, 5, "Goblin", 18, 5, 'g' );
+    createMonster( 6, 5, "Goblin", 17, 6, 'g' );
+    createMonster( 6, 5, "Goblin", 18, 4, 'g' );
     
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 54, 17, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 55, 17, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 54, 18, 'g' );
+    createMonster( 6, 5, "Goblin", 54, 17, 'g' );
+    createMonster( 6, 5, "Goblin", 55, 17, 'g' );
+    createMonster( 6, 5, "Goblin", 54, 18, 'g' );
     
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 53, 17, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 54, 19, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 52, 19, 'g' );
+    createMonster( 6, 5, "Goblin", 53, 17, 'g' );
+    createMonster( 6, 5, "Goblin", 54, 19, 'g' );
+    createMonster( 6, 5, "Goblin", 52, 19, 'g' );
     
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 51, 16, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 51, 17, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 51, 18, 'g' );
+    createMonster( 6, 5, "Goblin", 51, 16, 'g' );
+    createMonster( 6, 5, "Goblin", 51, 17, 'g' );
+    createMonster( 6, 5, "Goblin", 51, 18, 'g' );
     
-    listofMonsters[ UID ] = createMonster( 6, 5, "Goblin", 51, 13, 'g' );
-    listofMonsters[ UID ] = createMonster( 6, 5, "Gelatinous Tarrasque", 52, 16, 'T' );
+    createMonster( 6, 5, "Goblin", 51, 13, 'g' );
+    createMonster( 30, 9, "Tarrasque", 52, 16, 'T' );
 
+    struct unit newUnit = createNewUnit( 1, 1, 10, 1, "Peasant" );
+    addUnitToArmy( &newUnit  );
+    newUnit = createNewUnit( 2, 4, 1, 2, "Knight" );
+    addUnitToArmy( &newUnit );
 
 	changeMessage( "It is very dark in here. You are likely to be eaten by a grue." );
     
@@ -85,10 +90,10 @@ int main( )
         if ( runOnce != 0 )
         {
             int i;
-            for ( i = 0; i < ( UID - 1 ); i++ )
-            {
-                updateMonster( &listofMonsters[ i ] );
-            }
+            //for ( i = 0; i < ( monsterListFilledTo - 1 ); i++ )
+            //{
+            //    updateMonster( &listofMonsters[ i ] );
+            //}
             changeMessage( " " );
             //update monsters here, I suppose
         } 
@@ -124,7 +129,7 @@ int main( )
 	} while ( getCommanderStatus( ) == STOP || ( ch = wgetch( mainWindow ) ) != 'q' );
     
     int i;
-    for ( i = 0; i != UID; i++ )
+    for ( i = 0; i != monsterListFilledTo; i++ )
     {
         free( listofMonsters[ i ].name );
     }
@@ -144,11 +149,22 @@ void update_scr( WINDOW *local_win )
     drawGameArea( );
     
     int i;
-    for( i = 0; i != UID; i++ )
+    for( i = 0; i != monsterListFilledTo; i++ )
     {
         drawMonster( &listofMonsters[ i ] );
     }
     drawPlayer( );
+    
+//    FILE *fp;
+//    if (fp = fopen("stuff.txt", "a"))
+//    {
+//    for( i = 0; i != 20; i++ )
+//    {
+//        fprintf( fp, "%s: %d ", listofMonsters[ i ].name, listofMonsters[ i ].identifier );
+//    }
+//        fprintf( fp, "\n" );
+//        fclose( fp );
+//    }
     
     mvprintw( getGameAreaYplusHeight( ) + 2, 1, message );
     move( row-1, col-1 );

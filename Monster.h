@@ -11,7 +11,6 @@
 #define MONSTER_H
 
 #include "globalFunctions.h"
-#include "Player.h"
 
 struct monster {
     int maxHP;
@@ -26,11 +25,14 @@ struct monster {
     char graphic;
 };
 
-int UID;
-
 struct monster listofMonsters[ 20 ];
+int monsterListFilledTo;
 
-struct monster createMonster( int maxHP, int attack, char* name, int X, int Y, char graphic );
+void addMonsterToList( struct monster *target );
+
+void removeMonsterFromList( int indexToRemoveFrom );
+
+void createMonster( int maxHP, int attack, char* name, int X, int Y, char graphic );
 
 int nameMonster( struct monster *target, char* newName );
 

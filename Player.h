@@ -9,9 +9,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "GameArea.h"
-#include "Monster.h"
-#include "Units.h"
 #include "globalFunctions.h"
 
 enum Condition {
@@ -49,7 +46,7 @@ int conditionDuration;
 int speed;
 int companion;
 
-struct unit army[ 10 ];
+int armyFilledTo;
 
 int initPlayer( int x, int y, int maxHP, int attack, int initialSpeed );
 
@@ -63,7 +60,7 @@ int commanderAttackTarget( struct monster *target );
 
 int armyAttack( );
 
-struct monster* checkCollision( int testLocationX, int testLocationY );
+struct monster* checkCollision( int testLocationX, int testLocationY);
 
 int movePlayer( int *current, int check, struct monster *collideWith, int direction );
 

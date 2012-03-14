@@ -8,20 +8,28 @@
 
 #include "globalFunctions.h"
 
-void changeMessage( char* newMessage )
+void changeMessage( char *newMessage )
 {
+    free( message );
     message = malloc( sizeof( newMessage ) );
     strcpy( message, newMessage );
 }
 
-int randInt( int from, int to )
+void swapUnits( int indexA, int indexB )
 {
-    randSeed = ( randSeed % to ) + from;
-    return randSeed;
+    struct unit temporaryUnit = army[ indexA ];
+    army[ indexA ] = army[ indexB ];
+    army[ indexB ] = temporaryUnit;
+    
 }
 
-void setSeed( int setTo )
+void swapMonsters( int indexA, int indexB )
 {
-    srandom( time( 0 ) );
-    randSeed = setTo;
+    //listofMonsters[ indexA ].identifier = indexB;
+    listofMonsters[ indexB ].identifier = indexA;
+    
+    struct monster temporaryMonster = listofMonsters[ indexA ];
+    listofMonsters[ indexA ] = listofMonsters[ indexB ];
+    listofMonsters[ indexB ] = temporaryMonster;
+    
 }

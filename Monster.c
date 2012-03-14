@@ -11,21 +11,31 @@
 
 #include "Monster.h"
 
-struct monster createMonster( int maxHP, int attack, char* name, int X, int Y, char graphic )
+void addMonsterToList( struct monster *target )
+{
+    listofMonsters[ monsterListFilledTo ] = *target;
+    monsterListFilledTo++;
+}
+
+void removeMonsterFromList( int indexToRemoveFrom )
+{
+    swapMonsters( indexToRemoveFrom, --monsterListFilledTo );
+}
+
+void createMonster( int maxHP, int attack, char* name, int X, int Y, char graphic )
 {
     struct monster newMonster;
     newMonster.maxHP = maxHP;
     newMonster.currentHP = maxHP;
     newMonster.attack = attack;
-    newMonster.identifier = UID;
-    UID++;
+    newMonster.identifier = monsterListFilledTo;
     
     newMonster.X = X;
     newMonster.Y = Y;
     newMonster.graphic = graphic;
     
     nameMonster( &newMonster, name );
-    return newMonster;
+    addMonsterToList( &newMonster );
 }
 
 int nameMonster ( struct monster *target, char* newName )
@@ -43,16 +53,25 @@ int attackPlayerCommander( struct monster *attacker )
 
 int hurtMonster( struct monster *target, int damage )
 {
+    struct monster temporaryMonster = *target;
     target->currentHP = target->currentHP - damage;
     if ( target->currentHP < 1 )
     {
-        listofMonsters[ target->identifier ].identifier = -1;
-        char* string = malloc( sizeof( "Killed " ) );
-        strcpy( string, "Killed " );
-        strcat( string, target->name );
-        changeMessage( string );
-        free( string );
+        target->identifier = -1;
+        removeMonsterFromList( temporaryMonster.identifier );
+        temporaryMonster.identifier = -1;
     }
+    char string[64];
+    if ( temporaryMonster.identifier == -1 )
+    {
+        sprintf( string, "Killed a(n) " );
+    }
+    else
+    {
+        sprintf( string, "Attacked a(n) " );
+    }
+    strcat( string, temporaryMonster.name );
+    changeMessage( string  );
     return 0;
 }
 
@@ -61,6 +80,11 @@ int drawMonster( struct monster *target )
     if ( target->identifier != -1 )
     {
         return mvaddch( target->Y, target->X, target->graphic );
+    }
+    else
+    {
+        return mvaddch( target->Y, target->X, '%' );
+
     }
     return 0;
 }

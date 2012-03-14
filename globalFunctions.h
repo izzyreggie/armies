@@ -17,13 +17,17 @@
 #include <time.h>
 #include <math.h>
 
+#include "Player.h"
+#include "Monster.h"
+#include "Units.h"
+#include "GameArea.h"
+
 char* message;
-int randSeed;
 
-void changeMessage( char* newMessage );
+void changeMessage( char *newMessage );
 
-int randInt( int from, int to );
+void swapUnits( int indexA, int indexB );
 
-void setSeed( int setTo );
+void swapMonsters( int indexA, int indexB );
 
 #endif
