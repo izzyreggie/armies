@@ -30,6 +30,8 @@ int main( )
 		fprintf( stderr, "Error initializing ncurses.\n" );
 		exit( EXIT_FAILURE );
 	}
+    start_color( );
+
 	
 	if ( cbreak( ) != OK )
 	{
@@ -37,9 +39,14 @@ int main( )
 		exit( EXIT_FAILURE );
 	}
     
-	getmaxyx( stdscr, row, col );	
+	//getmaxyx( stdscr, row, col );	
+    row = 24;
+    col = 80;
 	keypad( mainWindow, TRUE );	
 	noecho( );
+    curs_set( 0 );
+    init_pair( 2, COLOR_BLACK, COLOR_WHITE );
+    init_pair( 1, COLOR_BLUE, COLOR_BLACK );
     
     initPlayer( 0, 3, 10, 1, 1 );
     initGameArea( 0, 3, 60, 20 );
@@ -94,7 +101,7 @@ int main( )
             //{
             //    updateMonster( &listofMonsters[ i ] );
             //}
-            changeMessage( " " );
+            clearMessage( );
             //update monsters here, I suppose
         } 
         else
@@ -141,12 +148,15 @@ int main( )
 
 void update_scr( WINDOW *local_win )
 {
-	clear( );
+	//clear( );
 	
     draw_title( );
 	make_box( getGameAreaXplusWidth( ) + 1, getGameAreaY( ), col, row - 2, 'x' );
 	make_box( 0, getGameAreaYplusHeight( ) + 1, col, row, 'x' );
+    
+    //attron( COLOR_PAIR( 2 ) );
     drawGameArea( );
+    //attroff( COLOR_PAIR( 2 ) );
     
     int i;
     for( i = 0; i != monsterListFilledTo; i++ )
@@ -154,6 +164,7 @@ void update_scr( WINDOW *local_win )
         drawMonster( &listofMonsters[ i ] );
     }
     drawPlayer( );
+
     
 //    FILE *fp;
 //    if (fp = fopen("stuff.txt", "a"))
@@ -166,7 +177,10 @@ void update_scr( WINDOW *local_win )
 //        fclose( fp );
 //    }
     
-    mvprintw( getGameAreaYplusHeight( ) + 2, 1, message );
+    //attron( COLOR_PAIR( 1 ) );
+    //mvprintw( getGameAreaYplusHeight( ) + 2, 1, message );
+    //attroff( COLOR_PAIR( 1 ) );
+
     move( row-1, col-1 );
 	
 	refresh( );

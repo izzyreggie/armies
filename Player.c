@@ -131,7 +131,7 @@ int movePlayer( int *current, int check, struct monster* collideWith, int direct
     }
     else
     {
-        changeMessage( "Bumped into a wall." );
+        changeMessage( "Bumped into a wall. Ouch!" );
     }
 
     return 0;

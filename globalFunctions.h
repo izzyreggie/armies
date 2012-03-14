@@ -24,6 +24,8 @@
 
 char* message;
 
+void clearMessage( );
+
 void changeMessage( char *newMessage );
 
 void swapUnits( int indexA, int indexB );
